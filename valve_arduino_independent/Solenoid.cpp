@@ -8,7 +8,7 @@ Solenoid::Solenoid(int i_pin, bool b_special, bool b_no) {
         openSignal = LOW;
         closeSignal = HIGH;
     }
-    else{
+    else{ //NC
         openSignal = HIGH;
         closeSignal = LOW;
     }
@@ -81,26 +81,21 @@ void Solenoid::controlSpecial() {
     if(!isSpecial){ // This method only applies to "special" valves
         return;
     }
-    if(currSignal == HIGH){ // assuming closed in not cycling... closed is HIGH for NO valves (top two relays)
+    if(currSignal == HIGH){ // HIGH is openSignal // assuming closed in not cycling... closed is HIGH for NO valves (top two relays)
         if(millis() - lastActuationTime >= MAX_SPECIAL_POWER){
             setLow(); // Relieve the valve
             beingRelieved = true;
         }
+    }
     
-        if(beingRelieved) {
-            if(millis() - lastActuationTime >= RELIEF_WAIT_TIME){
-                setHigh();
-                beingRelieved = false;
-            }
-        }
-
-    } else {
-        if(beingRelieved) {
-            if(millis() - lastActuationTime >= RELIEF_WAIT_TIME){
-                beingRelieved = false;
-            }
+    if(beingRelieved) {
+        if(millis() - lastActuationTime >= RELIEF_WAIT_TIME){
+            setHigh();
+            beingRelieved = false;
         }
     }
+
+    
 }
 
 void Solenoid::actuate(int actuationType){
@@ -114,6 +109,8 @@ void Solenoid::actuate(int actuationType){
     }
     else if(actuationType == CLOSE_VENT){
         close();
+        if(isSpecial) 
+          beingRelieved = false;
     }
     else if(actuationType == OPEN_VENT){
         open();
@@ -128,7 +125,7 @@ void Solenoid::actuate(int actuationType){
     actuation = actuationType;
 //    Serial.println("ACTUATING");
 //    Serial.println(actuation);
-    printSomething();
+//    printSomething();
 //    Serial.println("ACTUATING");
 }
 

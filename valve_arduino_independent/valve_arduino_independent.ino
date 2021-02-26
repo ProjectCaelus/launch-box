@@ -16,8 +16,8 @@ void loop() {
   valve_arduino->update();
   delay(100);
 
-  if(millis() > 5000 && !actuated) {
-    valve_arduino->actuate(4, 4, false);  //have made actuate a public method to test
-    actuated = true;
-  }
+//  if(millis() > 5000 && !actuated) {
+//    valve_arduino->actuate(4, 4, false);  //have made actuate a public method to test
+//    actuated = true;
+//  }
 }
